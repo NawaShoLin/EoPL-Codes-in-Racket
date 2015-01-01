@@ -183,6 +183,8 @@
   (cond [(leaf? tree-node) tree-node]
         [else (node-symbol tree-node)]))
 
+
+;; Ex 1.32
 (define (double-tree tree)
   (cond [(leaf? tree) (* 2 tree)]
         [else (interior-node
@@ -190,8 +192,55 @@
                (double-tree (lson tree))
                (double-tree (rson tree)))]))
 
+;;Ex 1.33
+(define (mark-leaves-with-red-depth tree)
+  (red-tree 0 tree))
+
+(define (red-interior-node? t)
+  (eqv? (node-symbol t) 'red))
+
+(define (red-in-node t depth)
+  (interior-node [node-symbol t]
+                 [red-tree (lson t) depth]
+                 [red-tree (rson t) depth]))
+
+(define (red-tree t depth)
+  (cond [(leaf? t) depth]
+        [else (cond [(red-interior-node? t)
+                     (red-in-node t (add1 depth))]
+                    [else (red-in-node t depth)])]))
 
 
-  
+;; Ex 1.34
+(define (path x bst)
+  (let [(v (node-value bst))]
+    (cond [(< x v) (cons 'left
+                         (path x (left-side bst)))]
+          [(> x v) (cons 'right
+                         (path x (right-side bst)))]
+          [else '()])))
+
+(define (node-value bst)
+  (car bst))
+(define (left-side bst)
+  (cadr bst))
+(define (right-side bst)
+  (caddr bst))
 
 
+;; Ex 1.35
+(define (number-leaves t)
+  (let [(cnt 0)]
+    (define (dfs-nl t)
+      (cond [(leaf? t)
+             (let [(lf cnt)]
+               (set! cnt (add1 cnt)) lf)]
+            [else 
+             (interior-node [node-symbol t]
+                            [dfs-nl (lson t)]
+                            [dfs-nl (rson t)])]))
+    (dfs-nl t)))
+
+
+;; Ex 1.36
+; Someone help me..
